@@ -7,9 +7,7 @@ Table of Contents
 •	Database Setup
 •	API Endpoints
 •	Project Structure
-•	Screenshots
 •	Contributors
-•	License
 ________________________________________
 📌 Project Overview
 PhysioEase is a web application designed to connect patients with professional physiotherapists. It allows users to:
@@ -47,7 +45,6 @@ npm start
 
 
 Backend (Node.js + Express)
-
 cd backend
 npm install
 npm start
@@ -57,9 +54,9 @@ Database Setup
 
 CREATE DATABASE physioease;
 
-2.	Import the database schema (if available). 
+2.	Import the database schema. 
 
-3.	Update your config/db.js file with your MySQL credentials:
+3.	Update config/db.js file with your MySQL credentials:
 
 const { Sequelize } = require("sequelize");
 
@@ -102,11 +99,3 @@ Test the APIs using Postman or any REST API tool.
 │── package.json          # Dependencies
 │── README.md             # Documentation
 │── .gitignore            # Git Ignore file
-Screenshots: 
- 
-
- 
-
- 
-
- 
