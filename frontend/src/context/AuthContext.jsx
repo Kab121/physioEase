@@ -6,30 +6,31 @@ export const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
 
-  useEffect(() => {
+  const fetchUser = async () => {
     const token = localStorage.getItem("token");
     if (token) {
-      axios
-        .get("http://localhost:5000/api/auth/user", {  // ✅ Fixed Endpoint
+      try {
+        const res = await axios.get("http://localhost:5000/api/auth/user", {
           headers: { Authorization: `Bearer ${token}` },
-        })
-        .then((res) => {
-          setUser(res.data.user); // ✅ Ensure correct user structure
-        })
-        .catch((err) => {
-          console.error("🚨 Error fetching user:", err);
-          logout(); // ✅ Log out if token is invalid
         });
+        setUser(res.data.user);
+      } catch (err) {
+        console.error("Error verifying token:", err);
+        logout();
+      }
     }
+  };
+
+  useEffect(() => {
+    fetchUser();
   }, []);
 
-  const login = (token, userData) => {
+  const login = async (token) => {
     localStorage.setItem("token", token);
-    setUser(userData);
+    await fetchUser();
   };
 
   const logout = () => {
-    console.log("🔴 Logging out...");
     localStorage.removeItem("token");
     setUser(null);
   };
