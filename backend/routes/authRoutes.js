@@ -23,11 +23,15 @@ router.post("/register", async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
     console.log("🔐 Hashed Password:", hashedPassword);
 
+    // Automatically assign 'doctor' if name starts with 'Dr.', else 'patient'
+    const role = name.toLowerCase().startsWith("dr.") ? "doctor" : "patient";
+
     // Insert user into database
     const newUser = await User.create({
       name,
       email,
       password: hashedPassword,
+      role, // ✅ Save role
     });
 
     console.log("✅ User Registered:", newUser);
@@ -54,13 +58,8 @@ router.post("/login", async (req, res) => {
       return res.status(400).json({ error: "Invalid email or password!" });
     }
 
-    console.log("🔍 User Found:", user.email);
-    console.log("🔑 Hashed Password in DB:", user.password);
-
     // Compare the hashed password
     const isMatch = await bcrypt.compare(password, user.password);
-    console.log("🔄 Comparing Passwords:", isMatch);
-
     if (!isMatch) {
       console.log("❌ Password Mismatch for:", email);
       return res.status(400).json({ error: "Invalid email or password!" });
@@ -70,7 +69,15 @@ router.post("/login", async (req, res) => {
     const token = jwt.sign({ id: user.id }, "secretkey", { expiresIn: "1h" });
 
     console.log("✅ Login Successful:", email);
-    res.json({ message: "Login successful!", token });
+    res.json({
+      message: "Login successful!",
+      token,
+      user: {
+        name: user.name,
+        email: user.email,
+        role: user.role, // ✅ Send role to frontend
+      }
+    });
 
   } catch (err) {
     console.error("🔥 Login Error:", err);
@@ -82,7 +89,6 @@ router.post("/login", async (req, res) => {
 router.get("/user", async (req, res) => {
   try {
     const token = req.headers.authorization?.split(" ")[1];
-
     if (!token) {
       return res.status(401).json({ error: "Unauthorized" });
     }
@@ -90,7 +96,7 @@ router.get("/user", async (req, res) => {
     const decoded = jwt.verify(token, "secretkey");
 
     const user = await User.findByPk(decoded.id, {
-      attributes: ["id", "name", "email"], // Exclude password
+      attributes: ["id", "name", "email", "role"], // ✅ Include role
     });
 
     if (!user) {

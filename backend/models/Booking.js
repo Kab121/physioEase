@@ -19,6 +19,10 @@ const Booking = db.define("bookings", {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  doctor_email: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },  
   appointment_date: {  // ✅ Must match your DB column
     type: DataTypes.DATEONLY,
     allowNull: false,

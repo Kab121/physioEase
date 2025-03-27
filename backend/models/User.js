@@ -20,11 +20,17 @@ const User = db.define("users", {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  role: {                      // ✅ New field for role-based access
+    type: DataTypes.STRING,
+    allowNull: false,
+    defaultValue: "patient",   // default role if not doctor
+  },
 }, { 
-  tableName: "users", // ✅ Ensure correct table name
-  timestamps: false   // ✅ Disable createdAt & updatedAt
+  tableName: "users",
+  timestamps: false
 });
 
+// ✅ Sync table
 db.sync()
   .then(() => console.log("✅ User table ready"))
   .catch((err) => console.log("❌ Error creating table: " + err));
