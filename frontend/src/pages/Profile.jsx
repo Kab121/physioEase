@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { AuthContext } from "../context/AuthContext";
-import { FaUser, FaCalendarAlt } from "react-icons/fa";
+import { FaUser, FaCalendarAlt, FaTrash, FaEdit } from "react-icons/fa";
 
 const Profile = () => {
   const { user } = useContext(AuthContext);
@@ -27,6 +27,18 @@ const Profile = () => {
     fetchBookings();
   }, [user]);
 
+  const handleDelete = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this appointment?")) return;
+
+    try {
+      await axios.delete(`http://localhost:5000/api/bookings/delete/${id}`);
+      setBookings(bookings.filter((b) => b.id !== id)); // Remove from UI
+    } catch (err) {
+      console.error("❌ Delete failed:", err);
+      alert("Failed to delete appointment.");
+    }
+  };
+
   return (
     <div className="container mt-5">
       <h2 className="mb-4"><FaUser className="me-2" />User Profile</h2>
@@ -50,6 +62,20 @@ const Profile = () => {
             <p><strong>Date:</strong> {booking.appointment_date}</p>
             <p><strong>Time:</strong> {booking.appointment_time}</p>
             <p><strong>Session:</strong> {booking.session_type}</p>
+
+            <div className="d-flex gap-2">
+              <button
+                className="btn btn-sm btn-danger"
+                onClick={() => handleDelete(booking.id)}
+              >
+                <FaTrash className="me-1" /> Delete
+              </button>
+
+              {/* Optional: Add edit functionality later */}
+              {/* <button className="btn btn-sm btn-warning">
+                <FaEdit className="me-1" /> Edit
+              </button> */}
+            </div>
           </div>
         ))
       ) : (

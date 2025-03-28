@@ -22,8 +22,8 @@ const Booking = () => {
     "Dr. Liam Wilson": ["07:30 AM", "09:45 AM", "01:15 PM", "04:45 PM"],
   };
 
-  // ✅ Helper to get doctor email from name
-  function getDoctorEmail(name) {
+  // ✅ Get doctor email based on name
+  const getDoctorEmail = (name) => {
     const mapping = {
       "Dr. James Anderson": "james@gmail.com",
       "Dr. Emily Carter": "emily@hotmail.com",
@@ -31,7 +31,7 @@ const Booking = () => {
       "Dr. Liam Wilson": "liam@yahoo.com",
     };
     return mapping[name] || "";
-  }
+  };
 
   const [formData, setFormData] = useState({
     patient_name: "",
@@ -48,12 +48,13 @@ const Booking = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  // ✅ Final fixed submit logic
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const completeData = {
       ...formData,
-      doctor_email: getDoctorEmail(formData.doctor_name), // ✅ Add doctor_email
+      doctor_email: getDoctorEmail(formData.doctor_name),
     };
 
     try {
@@ -73,7 +74,7 @@ const Booking = () => {
       }
     } catch (error) {
       console.error("❌ Server Error:", error);
-      setMessage("❌ Server Error. Please try again.");
+      setMessage("❌ Server Error. Please try again later.");
     }
   };
 
@@ -95,11 +96,8 @@ const Booking = () => {
         {message && <p className="text-center alert alert-info">{message}</p>}
 
         <form onSubmit={handleSubmit}>
-          {/* Patient Name */}
           <div className="mb-3 input-group">
-            <span className="input-group-text">
-              <FaUser />
-            </span>
+            <span className="input-group-text"><FaUser /></span>
             <input
               type="text"
               className="form-control"
@@ -111,11 +109,8 @@ const Booking = () => {
             />
           </div>
 
-          {/* Email */}
           <div className="mb-3 input-group">
-            <span className="input-group-text">
-              <FaNotesMedical />
-            </span>
+            <span className="input-group-text"><FaNotesMedical /></span>
             <input
               type="email"
               className="form-control"
@@ -127,11 +122,8 @@ const Booking = () => {
             />
           </div>
 
-          {/* Doctor Name */}
           <div className="mb-3 input-group">
-            <span className="input-group-text">
-              <FaUserMd />
-            </span>
+            <span className="input-group-text"><FaUserMd /></span>
             <input
               type="text"
               className="form-control"
@@ -141,11 +133,8 @@ const Booking = () => {
             />
           </div>
 
-          {/* Appointment Date */}
           <div className="mb-3 input-group">
-            <span className="input-group-text">
-              <FaCalendarAlt />
-            </span>
+            <span className="input-group-text"><FaCalendarAlt /></span>
             <input
               type="date"
               className="form-control"
@@ -156,7 +145,6 @@ const Booking = () => {
             />
           </div>
 
-          {/* Time Slot */}
           <div className="mb-3">
             <label className="form-label fw-bold">Available Time Slots</label>
             <select
@@ -168,14 +156,11 @@ const Booking = () => {
             >
               <option value="">Select a time</option>
               {timeSlots[formData.doctor_name]?.map((slot, index) => (
-                <option key={index} value={slot}>
-                  {slot}
-                </option>
+                <option key={index} value={slot}>{slot}</option>
               ))}
             </select>
           </div>
 
-          {/* Session Type */}
           <div className="mb-3">
             <label className="form-label fw-bold">Session Type</label>
             <select
@@ -191,7 +176,6 @@ const Booking = () => {
             </select>
           </div>
 
-          {/* Submit */}
           <button type="submit" className="btn btn-primary w-100">
             Confirm Appointment
           </button>
